@@ -66,16 +66,16 @@ public class WiredElement {
     }
 
     private String convertPrimitiveToBoxed(String name) {
-        return switch (name) {
-            case "int" -> "java.lang.Integer";
-            case "double" -> "java.lang.Double";
-            case "char" -> "java.lang.Character";
-            case "long" -> "java.lang.Long";
-            case "short" -> "java.lang.Short";
-            case "float" -> "java.lang.Float";
-            case "void" -> "java.lang.Void";
-            default -> name;
-        };
+        switch (name) {
+            case "int": return "java.lang.Integer";
+            case "double": return "java.lang.Double";
+            case "char": return "java.lang.Character";
+            case "long": return "java.lang.Long";
+            case "short": return "java.lang.Short";
+            case "float": return "java.lang.Float";
+            case "void": return "java.lang.Void";
+            default: return name;
+        }
     }
 
     public boolean isField() {
