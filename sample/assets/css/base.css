@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    h1, h2, h3, h4, h5, h6, a, p, input {
+        @apply text-gray-800;
+    }
+
+/*
+    table {
+        @apply min-w-full divide-y divide-gray-200;
+    }
+
+    table > thead {
+        @apply bg-gray-50;
+    }
+
+    table th {
+        @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+    }
+
+    table > tbody {
+        @apply bg-white divide-y divide-gray-200;
+    }
+
+    table td {
+        @apply px-6 py-4 whitespace-nowrap;
+    }*/
+}
+
+@layer components {
+    .btn {
+        @apply flex items-center font-bold px-3 py-1.5 shadow rounded-sm uppercase text-gray-800 tracking-wide;
+    }
+
+    .btn:hover {
+        @apply shadow-md bg-gray-50;
+    }
+
+    .btn:disabled {
+        @apply opacity-60 shadow-none cursor-default;
+    }
+
+    .btn-primary {
+        @apply bg-primary-500 text-white;
+    }
+    .btn-primary:hover {
+        @apply bg-primary-600;
+    }
+    .btn-primary:disabled {
+        @apply bg-primary-500;
+    }
+}

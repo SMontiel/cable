@@ -1,0 +1,5 @@
+rootProject.name = 'sample'
+
+include ":core", ':compiler'
+project(":core").projectDir = file("../core")
+project(':compiler').projectDir = file('../compiler')

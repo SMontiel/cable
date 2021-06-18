@@ -1,0 +1,42 @@
+{
+  "name": "sample",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "npm run production",
+    "check": "echo 'Checking frontend'",
+    "clean": "echo 'Cleaning frontend'",
+    "dev": "npm run development",
+    "development": "mix",
+    "hot": "mix watch --hot",
+    "lint": "echo 'Linting frontend'",
+    "prod": "npm run production",
+    "production": "mix --production",
+    "test": "echo 'Testing frontend'",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000"
+  },
+  "devDependencies": {
+    "@vue/compiler-sfc": "^3.0.11",
+    "autoprefixer": "10.2.3",
+    "axios": "0.21.1",
+    "chokidar": "^3.5.1",
+    "cross-env": "7.0.3",
+    "laravel-mix": "6.0.10",
+    "lodash": "4.17.20",
+    "postcss": "8.2.4",
+    "resolve-url-loader": "^3.1.2",
+    "tailwindcss": "^2.1.2",
+    "ts-loader": "^9.1.2",
+    "typescript": "^4.2.4",
+    "vue": "^3.0.11",
+    "vue-loader": "^16.2.0",
+    "vue-notifications": "1.0.2",
+    "vue-template-compiler": "2.6.12",
+    "vue-toasted": "1.1.28"
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.2.0",
+    "@heroicons/vue": "^1.0.1",
+    "@tailwindcss/forms": "^0.3.2"
+  }
+}

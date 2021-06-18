@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group 'com.salvadormontiel'
+version '0.0.0'
+
+targetCompatibility = JavaVersion.VERSION_14
+sourceCompatibility = JavaVersion.VERSION_14
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation project(':core')
+    implementation 'com.google.auto.service:auto-service:1.0-rc2'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc2'
+    implementation 'com.google.guava:guava:18.0'
+    implementation 'com.squareup:javapoet:1.13.0'
+
+    testCompile 'com.google.testing.compile:compile-testing:0.6'
+    testCompile 'junit:junit:4.13'
+}

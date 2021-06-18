@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <title layout:title-pattern="$CONTENT_TITLE &middot; $LAYOUT_TITLE">Cable</title>
+
+        <meta charset="UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="/css/app.css" rel="stylesheet">
+    </head>
+    <body>
+        <header class="relative bg-white border-b-2 border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6">
+                <div class="flex justify-between items-center py-1 md:justify-start md:space-x-10">
+                    <div class="flex justify-start lg:w-0 lg:flex-1">
+                        <a href="/" class="flex items-center">
+                            <p class="text-2xl ml-2 font-bold text-gray-700">Cable</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div layout:fragment="content"></div>
+        </section>
+
+        <script src="/js/index.js"></script>
+    </body>
+</html>

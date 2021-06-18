@@ -1,0 +1,52 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    //id 'org.siouan.frontend-jdk11' version '5.1.0'
+}
+
+group 'com.salvadormontiel'
+version '0.0.0'
+
+targetCompatibility = JavaVersion.VERSION_14
+sourceCompatibility = JavaVersion.VERSION_14
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation project(':core')
+    annotationProcessor project(':compiler')
+
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.5.1'
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    //developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    testCompile 'junit:junit:4.13'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+/*
+frontend {
+    nodeVersion = '14.15.4'
+    assembleScript = 'run build'
+    cleanScript = 'run clean'
+    checkScript = 'run check'
+}
+
+import org.siouan.frontendgradleplugin.infrastructure.gradle.RunNpmYarn
+task compileAssets(type: RunNpmYarn) {
+    dependsOn installFrontend
+
+    if (project.hasProperty("production")) {
+        script = 'run production'
+    } else {
+        script = 'run development'
+    }
+}*/

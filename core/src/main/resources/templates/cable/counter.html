@@ -1,0 +1,9 @@
+<div xmlns:th="https://www.thymeleaf.org"
+     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     wire-attach="counter"
+     class="flex items-center my-4">
+    <button wire-click="increment" class="border font-mono shadow px-3 py-1 hover:bg-gray-200">+</button>
+    <p th:text="${ count }" class="mx-2"></p>
+    <button wire-click="decrement" class="border font-mono shadow px-3 py-1 hover:bg-gray-200">-</button>
+</div>
