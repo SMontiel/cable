@@ -6,7 +6,6 @@ import com.salvadormontiel.cable.Component;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * @author Salvador Montiel
@@ -19,7 +18,9 @@ public interface ComponentAdapter<T extends Component> {
 
 	void setComponent(T component);
 
-	void reset();
+	void resetAll();
+
+	void reset(List<String> fieldNames);
 
 	Function<List<Object>, Object> getMethodCall(String methodName);
 

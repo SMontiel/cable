@@ -1,6 +1,5 @@
 package com.salvadormontiel.cable;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salvadormontiel.cable.internal.ComponentAdapter;
 
 import java.util.*;
@@ -72,9 +71,12 @@ public abstract class Component {
 		return request.changes(key);
 	}
 
-	// TODO: pasarle field names para resetear
-	public void reset() {
-		adapter.reset();
+	public void resetAll() {
+		adapter.resetAll();
+	}
+
+	public void reset(List<String> fieldNames) {
+		adapter.reset(fieldNames);
 	}
 
 	public Map<String, Object> mount() {
@@ -87,17 +89,4 @@ public abstract class Component {
 		this.metadata.put(key, value);
 		return this;
 	}
-
-	// TODO: maybe delete this method
-//	public ComponentAdapter<Component> getAdapter() {
-//		return adapter;
-//	}
-
-	//	public final Map<String, Object> data = new HashMap<>();
-//	public final Map<String, Object> metadata = new HashMap<>();
-//
-//	public Component initialize(Map<String, Object> state) {
-//		System.out.println(">>>");
-//		return this;
-//	}
 }

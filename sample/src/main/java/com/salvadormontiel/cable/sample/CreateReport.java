@@ -47,7 +47,7 @@ public class CreateReport extends Component {
 	public Report create() {
 		Report u = ReportDB.getInstance().add(new Report(1, name, assignee, category, "pending"));
 		this.metadata("notification", "The report " + u.getName() + " has been created with id " + u.getId() + "!");
-		this.reset();
+		this.resetAll();
 
 		return u;
 	}

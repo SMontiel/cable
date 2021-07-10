@@ -1,7 +1,6 @@
 package com.salvadormontiel.cable.compiler.writer;
 
 import com.salvadormontiel.cable.CableRequest;
-import com.salvadormontiel.cable.Component;
 import com.salvadormontiel.cable.compiler.Registry;
 import com.salvadormontiel.cable.compiler.element.ComponentElement;
 import com.salvadormontiel.cable.compiler.element.WiredElement;
@@ -15,11 +14,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static javax.lang.model.element.Modifier.*;
 
@@ -62,6 +57,7 @@ public class ComponentWriter implements SourceWriter<ComponentElement> {
                 .addMethod(getComponentMethod(element))
                 .addMethod(setComponentMethod(element))
                 .addMethod(getComponentNameMethod(element))
+                .addMethod(resetAllMethod(element))
                 .addMethod(resetMethod(element))
                 .addMethod(getMethodCallMethod(element))
                 .addMethod(getDataMethod(element))
@@ -176,14 +172,31 @@ public class ComponentWriter implements SourceWriter<ComponentElement> {
                 .build();
     }
 
-    private MethodSpec resetMethod(ComponentElement element) {
+    private MethodSpec resetAllMethod(ComponentElement element) {
         CodeBlock.Builder cb = CodeBlock.builder();
         element.getWiredElements().stream()
                 .filter(WiredElement::isField)
                 .forEach(we -> cb.addStatement("component." + we.getName() + " = null"));
+        return MethodSpec.methodBuilder("resetAll")
+                .addModifiers(PUBLIC)
+                .addAnnotation(Override.class)
+                .addCode(cb.build())
+                .build();
+    }
+
+    private MethodSpec resetMethod(ComponentElement element) {
+        CodeBlock.Builder cb = CodeBlock.builder();
+        element.getWiredElements().stream()
+                .filter(WiredElement::isField)
+                .forEach(we -> {
+                    cb.beginControlFlow("if (fieldNames.contains(component." + we.getName() + "))");
+                    cb.addStatement("component." + we.getName() + " = null");
+                    cb.endControlFlow();
+                });
         return MethodSpec.methodBuilder("reset")
                 .addModifiers(PUBLIC)
                 .addAnnotation(Override.class)
+                .addParameter(ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(String.class)), "fieldNames")
                 .addCode(cb.build())
                 .build();
     }
@@ -236,111 +249,4 @@ public class ComponentWriter implements SourceWriter<ComponentElement> {
                 .returns(returns)
                 .build();
     }
-/*
-    private MethodSpec whereMethod(ComponentElement element) {
-        return MethodSpec.methodBuilder("where")
-            .addModifiers(PUBLIC, STATIC)
-            .addParameter(ParameterSpec.builder(String.class, "column").build())
-            .addParameter(ParameterSpec.builder(Object.class, "value").build())
-            .returns(ParameterizedTypeName.get(ClassName.get(List.class), TypeVariableName.get(element.getModelName())))
-            .addStatement("String sql = $T.columns(getColumnNamesWithAlias()).from(getComponentName()).where(column, value).getSql()", Select.class)
-            .addStatement("return hydrate($T.execute(sql, getColumnAliases(), getColumnTypes()))", Database.class)
-            .build();
-    }
-
-    private MethodSpec hydrateMethod(ComponentElement element) {
-        List<String> columnNames = element.getColumns().stream()
-            .map(ColumnElement::getColumnName)
-            .collect(Collectors.toList());
-
-        List<String> fieldNames = element.getColumns().stream()
-            .map(ColumnElement::getFieldName)
-            .collect(Collectors.toList());
-
-        List<String> types = element.getColumns().stream()
-            .map(ce -> ce.getDeserializedType().getSimpleName().toString())
-            .collect(Collectors.toList());
-
-        TypeName mapTypeName = ParameterizedTypeName.get(Map.class, String.class, Object.class);
-        ParameterSpec param = ParameterSpec.builder(mapTypeName, "map").build();
-
-        MethodSpec.Builder hydrateMethod = MethodSpec.methodBuilder("hydrate")
-            .addModifiers(STATIC)
-            .addParameter(param)
-            .returns(TypeVariableName.get(element.getModelName()))
-            .addStatement("$L model = new $L()", element.getModelName(), element.getModelName());
-        for (int i = 0; i < columnNames.size(); i++) {
-            //hydrateMethod.addStatement("model.$L = ($L) map.get(\"$L_$L\")",
-            //    fieldNames.get(i), types.get(i), element.getComponentName(), columnNames.get(i));
-            hydrateMethod.addStatement("model.$L = $L.valueOf(map.get(\"$L_$L\").toString())",
-                fieldNames.get(i), types.get(i), element.getComponentName(), columnNames.get(i));
-        }
-        hydrateMethod.addStatement("return model");
-
-        return hydrateMethod.build();
-    }
-
-    private MethodSpec hydrateListMethod(ComponentElement element) {
-        TypeName mapTypeName = ParameterizedTypeName.get(Map.class, String.class, Object.class);
-        TypeName listTypeName = ParameterizedTypeName.get(ClassName.get(List.class), mapTypeName);
-        ParameterSpec param = ParameterSpec.builder(listTypeName, "list").build();
-
-        return MethodSpec.methodBuilder("hydrate")
-            .addModifiers(STATIC)
-            .addParameter(param)
-            .returns(ParameterizedTypeName.get(ClassName.get(List.class), TypeVariableName.get(element.getModelName())))
-            .addStatement("return list.stream().map($L::hydrate).collect($T.toList())", element.getName(), Collectors.class)
-            .build();
-    }
-
-    private MethodSpec getColumnNamesWithAliasMethod(ComponentElement element) {
-        String columnNames = element.getColumns().stream()
-            .map(ColumnElement::getColumnName)
-            .map(cn -> element.getComponentName() + "." + cn + " AS " + element.getComponentName() + "_" + cn)
-            .collect(Collectors.joining(","));
-
-        return MethodSpec.methodBuilder("getColumnNamesWithAlias")
-            .addModifiers(STATIC)
-            .returns(ParameterizedTypeName.get(List.class, String.class))
-            .addStatement("String columnNames = $S", columnNames)
-            .addStatement("return $T.asList(columnNames.split($S))", Arrays.class, ",")
-            .build();
-    }
-
-    private MethodSpec getColumnAliasesMethod(ComponentElement element) {
-        String columnAliases = element.getColumns().stream()
-            .map(ColumnElement::getColumnName)
-            .map(cn -> element.getComponentName() + "_" + cn)
-            .collect(Collectors.joining(","));
-
-        return MethodSpec.methodBuilder("getColumnAliases")
-            .addModifiers(STATIC)
-            .returns(ParameterizedTypeName.get(List.class, String.class))
-            .addStatement("String columnAliases = $S", columnAliases)
-            .addStatement("return $T.asList(columnAliases.split($S))", Arrays.class, ",")
-            .build();
-    }
-
-    private MethodSpec getColumnTypesMethod(ComponentElement element) {
-        String columnTypes = element.getColumns().stream()
-            .map(ColumnElement::getDeserializedType)
-            .map(t -> t.getQualifiedName().toString())
-            .collect(Collectors.joining(","));
-
-        return MethodSpec.methodBuilder("getColumnTypes")
-            .addModifiers(STATIC)
-            .returns(ParameterizedTypeName.get(List.class, Class.class))
-            .addStatement("String columnTypes = $S", columnTypes)
-            .addStatement(CodeBlock.builder()
-                .add("return Arrays.asList(columnTypes.split(\",\")).stream().map(t -> {\n")
-                .add("    try {\n")
-                .add("        return Class.forName(t);\n")
-                .add("    } catch (ClassNotFoundException e) {\n")
-                .add("        e.printStackTrace();\n")
-                .add("        throw new RuntimeException(e);\n")
-                .add("    }\n")
-                .add("}).collect(Collectors.toList())")
-                .build())
-            .build();
-    }*/
 }

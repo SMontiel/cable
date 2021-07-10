@@ -23,7 +23,7 @@ public class CreateUser extends Component {
 	public User create() {
 		User u = UserDB.getInstance().add(new User(12, name, email, password));
 		this.metadata("notification", "The user " + u.getName() + " has been created with id " + u.getId() + "!");
-		this.reset();
+		this.resetAll();
 
 		return u;
 	}
