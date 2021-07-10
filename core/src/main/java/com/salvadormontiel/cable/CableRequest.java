@@ -27,6 +27,10 @@ public class CableRequest {
 		return (List<T>) calls.get(key);
 	}
 
+	public Map<String, ?> getState() {
+		return state;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

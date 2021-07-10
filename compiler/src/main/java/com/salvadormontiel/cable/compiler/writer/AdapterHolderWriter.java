@@ -84,7 +84,9 @@ public class AdapterHolderWriter implements SourceWriter<Element> {
         return MethodSpec.methodBuilder("getComponent")
                 .addModifiers(PUBLIC)
                 .addParameter(param)
-                .addStatement("return (T) COMPONENT_ADAPTERS.get(component).get()")
+                .addStatement("Supplier<Component> supplier = COMPONENT_ADAPTERS.get(component)")
+                .addStatement("if (supplier == null) return null")
+                .addStatement("return (T) supplier.get()")
                 .returns(returns)
                 .addTypeVariable(TypeVariableName.get("T", Component.class))
                 .build();
